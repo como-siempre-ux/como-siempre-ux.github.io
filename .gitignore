@@ -1,0 +1,17 @@
+# Copias de seguridad de versiones anteriores del portafolio
+index.backup.html
+index.v1-*.html
+
+# Configuracion local de Claude Code (servidor de vista previa)
+.claude/
+
+# Basura del sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Imagen antigua del hero (fondo blanco), sustituida por "Principal sin fondo.png"
+NUEVO/PRINCIPAL.png
+
+# Video sin comprimir (54 MB). Se anadira comprimido a ~7 MB.
+NUEVO/Malenia.mp4
