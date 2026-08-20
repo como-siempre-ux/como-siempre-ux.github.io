@@ -24,7 +24,9 @@
   --maxw:1080px;
   --ease:cubic-bezier(.22,.68,.16,1);
 }
-html{-webkit-text-size-adjust:100%;scroll-padding-top:5rem}
+/* Sin Lenis (móvil) los enlaces del menú usan el scroll suave del navegador.
+   Lenis, cuando está activo, lo anula él solo con su propia clase. */
+html{-webkit-text-size-adjust:100%;scroll-padding-top:5rem;scroll-behavior:smooth}
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-stopped{overflow:hidden}
@@ -42,6 +44,11 @@ a{color:inherit;text-decoration:none}
 .grain{position:fixed;inset:-50%;z-index:9998;pointer-events:none;opacity:.2;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
   animation:grainShift 8s steps(6) infinite}
+/* En móvil el grano se queda quieto y del tamaño justo: animar una capa de
+   ruido cuatro veces mayor que la pantalla es repintado puro y constante. */
+@media(max-width:900px){
+  .grain{inset:0;animation:none;opacity:.14}
+}
 @keyframes grainShift{0%{transform:translate(0,0)}20%{transform:translate(-4%,2%)}40%{transform:translate(3%,-3%)}60%{transform:translate(-2%,4%)}80%{transform:translate(4%,1%)}100%{transform:translate(0,0)}}
 .dots{position:fixed;inset:-20% -20%;z-index:0;pointer-events:none;
   background-image:radial-gradient(rgba(168,85,247,.22) 1.2px,transparent 1.7px);
@@ -49,6 +56,11 @@ a{color:inherit;text-decoration:none}
   -webkit-mask-image:radial-gradient(ellipse 80% 70% at 60% 30%,#000 0%,transparent 78%);
   mask-image:radial-gradient(ellipse 80% 70% at 60% 30%,#000 0%,transparent 78%);
   will-change:transform}
+/* La rejilla de puntos lleva una máscara radial: moverla obliga a recalcular
+   la máscara en cada fotograma. En móvil se queda fija. */
+@media(max-width:900px){
+  .dots{inset:0;will-change:auto}
+}
 .progress{position:fixed;top:0;left:0;height:2px;width:100%;transform:scaleX(0);transform-origin:0 50%;
   background:linear-gradient(90deg,var(--violet),var(--ember));z-index:10000}
 .skip{position:absolute;left:-999px;top:0;z-index:10001;background:var(--violet);color:#fff;padding:.7rem 1.1rem;font-family:var(--mono);font-size:.78rem}
@@ -84,6 +96,12 @@ a{color:inherit;text-decoration:none}
   background:linear-gradient(to bottom,rgba(7,7,7,.82),rgba(7,7,7,0));
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);will-change:transform}
 @media(min-width:768px){.nav{padding:1.15rem 2.6rem}}
+/* El desenfoque de fondo de la barra es carísimo en móvil porque se recalcula
+   con cada píxel de scroll. Se cambia por un fondo sólido, que se ve igual. */
+@media(max-width:900px){
+  .nav{backdrop-filter:none;-webkit-backdrop-filter:none;
+    background:linear-gradient(to bottom,rgba(7,7,7,.94) 60%,rgba(7,7,7,0))}
+}
 .nav-brand{font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:-.01em;
   white-space:nowrap;transition:color .25s}
 .nav-brand b{color:var(--violet);font-weight:800}
@@ -223,6 +241,11 @@ section.wrap{padding:7rem 1.5rem;max-width:var(--maxw);margin:0 auto;width:100%;
   padding:.36rem .82rem;border:1px solid rgba(255,255,255,.16);border-radius:999px;
   background:rgba(7,7,7,.5);backdrop-filter:blur(6px);color:#cfcfd4}
 .chip.on{border-color:var(--violet-soft);color:var(--violet)}
+/* Cinco etiquetas con desenfoque de fondo encima de un vídeo en movimiento
+   es lo peor que se le puede pedir a un móvil. Fondo sólido y listo. */
+@media(max-width:900px){
+  .chip{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(7,7,7,.8)}
+}
 
 /* ---------- SKILLS (acordeón) ---------- */
 .acc{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
@@ -298,6 +321,18 @@ section.wrap{padding:7rem 1.5rem;max-width:var(--maxw);margin:0 auto;width:100%;
 .gal-track{display:flex;gap:clamp(1rem,3vw,2.4rem);padding:0 clamp(1.5rem,8vw,10rem);will-change:transform}
 .gal-item{flex:0 0 auto;width:clamp(230px,60vw,420px)}
 .gal-item:nth-child(even){margin-top:clamp(2rem,8vh,6rem)}
+/* En móvil se arrastra con el dedo en vez de engancharse al scroll */
+@media(max-width:900px){
+  .gal-view{height:auto;padding:1rem 0 2rem;overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .gal-view::-webkit-scrollbar{height:4px}
+  .gal-view::-webkit-scrollbar-thumb{background:#2a2a2c;border-radius:4px}
+  .gal-track{padding:0 1.5rem;will-change:auto}
+  .gal-item{scroll-snap-align:center}
+  .gal-item:nth-child(even){margin-top:0}
+  .gal-track .fig{will-change:auto}
+  .gal-track .fig-inner{position:absolute;inset:0}
+}
 
 /* ---------- PROYECTOS ---------- */
 .grid-pr{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
@@ -966,6 +1001,7 @@ function mountImage(container, url, alt, pos){
 
 /* ---------- Utilidades ---------- */
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esMovil = window.matchMedia('(max-width: 900px)').matches;
 const isTouch = window.matchMedia('(hover:none),(pointer:coarse)').matches;
 
 function splitWords(el){
@@ -1080,7 +1116,11 @@ function splitWords(el){
 
   /* --- Smooth scroll (Lenis) --- */
   let lenis = null;
-  if(window.Lenis && !reduceMotion){
+  /* En móvil no se usa Lenis: el scroll táctil del sistema ya es suave y
+     además está acelerado por hardware. Lenis solo añadiría un bucle de
+     animación corriendo sin parar y el trabajo de reposicionar la página
+     en cada fotograma desde JavaScript. */
+  if(window.Lenis && !reduceMotion && !isTouch){
     lenis = new Lenis({lerp:0.085, wheelMultiplier:1, smoothWheel:true});
     window.lenis = lenis;
     lenis.on('scroll', ScrollTrigger.update);
@@ -1193,11 +1233,13 @@ function buildAnimations(){
     scrollTrigger:{trigger:document.body, start:'top top', end:'bottom bottom', scrub:.25}
   });
 
-  /* --- Rejilla de puntos: parallax global --- */
-  gsap.to('#dots', {
-    yPercent:-14, ease:'none',
-    scrollTrigger:{trigger:document.body, start:'top top', end:'bottom bottom', scrub:.6}
-  });
+  /* --- Rejilla de puntos: parallax global (solo en escritorio) --- */
+  if(!esMovil){
+    gsap.to('#dots', {
+      yPercent:-14, ease:'none',
+      scrollTrigger:{trigger:document.body, start:'top top', end:'bottom bottom', scrub:.6}
+    });
+  }
 
   /* --- Nav que se esconde al bajar ---
      Solo se anima cuando cambia de estado, y hace falta recorrer una
@@ -1244,7 +1286,10 @@ function buildAnimations(){
   gsap.timeline({
     scrollTrigger:{trigger:'.hero', start:'top top', end:'bottom top', scrub:.6}
   })
-  .to('#heroInner', {yPercent:10, scale:1.08, ease:'none'}, 0)
+    /* En móvil solo se desplaza, no se escala: la imagen del hero lleva un
+       filtro aplicado, y escalar una capa filtrada obliga a volver a
+       generarla en cada fotograma. Desplazarla no. */
+  .to('#heroInner', {yPercent:10, scale:esMovil ? 1 : 1.08, ease:'none'}, 0)
   .to('#heroCopy',  {yPercent:-38, opacity:0, ease:'none'}, 0)
   .fromTo('.hero-vig', {opacity:.85}, {opacity:1, ease:'none'}, 0);
 
@@ -1284,9 +1329,12 @@ function buildAnimations(){
   gsap.utils.toArray('[data-words]').forEach(el=>{
     const words = splitWords(el);
     if(!words.length) return;
+    /* Sin blur: dejaba unos textos nítidos y otros no (incoherente), y
+       desenfocar cada palabra por separado en cada fotograma es de lo más
+       caro que puede hacer un móvil. El revelado palabra a palabra se queda. */
     gsap.fromTo(words,
-      {opacity:.12, y:14, filter:'blur(4px)'},
-      {opacity:1, y:0, filter:'blur(0px)', ease:'none', stagger:.06,
+      {opacity:.14, y:12},
+      {opacity:1, y:0, ease:'none', stagger:.06,
        scrollTrigger:{trigger:el, start:'top 82%', end:'bottom 58%', scrub:.55}}
     );
   });
@@ -1355,15 +1403,31 @@ function buildAnimations(){
       });
     };
 
-    gsap.to(track, {
-      x:()=>-getDist(), ease:'none',
-      scrollTrigger:{
-        trigger:view, start:'top top', end:()=>'+=' + (getDist() + window.innerHeight * .4),
-        pin:view, pinSpacing:true, scrub:.8, anticipatePin:1, invalidateOnRefresh:true,
-        onUpdate:paint, onRefresh:paint
-      }
+    /* El anclaje solo se monta de 901 px para arriba. En móvil la galería
+       se arrastra con el dedo (scroll nativo, acelerado por hardware) en
+       vez de secuestrar la pantalla y reposicionar cinco fotos por
+       fotograma desde JavaScript, que era lo que más lo atascaba.
+       matchMedia lo monta y lo desmonta solo al girar el teléfono. */
+    gsap.matchMedia().add('(min-width: 901px)', ()=>{
+      const tw = gsap.to(track, {
+        x:()=>-getDist(), ease:'none',
+        scrollTrigger:{
+          trigger:view, start:'top top', end:()=>'+=' + (getDist() + window.innerHeight * .4),
+          pin:view, pinSpacing:true, scrub:.8, anticipatePin:1, invalidateOnRefresh:true,
+          onUpdate:paint, onRefresh:paint
+        }
+      });
+      paint();
+      return ()=>{                       // al pasar a móvil se deshace
+        tw.scrollTrigger && tw.scrollTrigger.kill();
+        tw.kill();
+        gsap.set(track, {clearProps:'transform'});
+        figs.forEach(f=>{
+          gsap.set(f, {clearProps:'clipPath'});
+          gsap.set(f.querySelector('.fig-inner'), {clearProps:'transform'});
+        });
+      };
     });
-    paint();
   }
 
   /* --- FOOTER: nombre gigante con parallax --- */

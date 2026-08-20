@@ -13,5 +13,5 @@ desktop.ini
 # Imagen antigua del hero (fondo blanco), sustituida por "Principal sin fondo.png"
 NUEVO/PRINCIPAL.png
 
-# Video sin comprimir (54 MB). Se anadira comprimido a ~7 MB.
-NUEVO/Malenia.mp4
+# Captura original sin comprimir (54 MB). En el repo va la version web.
+NUEVO/Malenia-original.mp4
